@@ -1,13 +1,18 @@
-import 'package:event_hub/client_screens/notifications_page.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:event_hub/config/conn_api.dart'; // Asegúrate de que este archivo exista y tenga la URL de la API
 
-class ClientHome extends StatefulWidget {
+class NotificationsPage extends StatefulWidget {
+  const NotificationsPage({super.key});
+
   @override
-  _ClientHomeState createState() => _ClientHomeState();
+  State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
-class _ClientHomeState extends State<ClientHome> {
+class _NotificationsPageState extends State<NotificationsPage> {
   int _selectedIndex = 0;
+  List<dynamic> _notifications = [];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -16,19 +21,39 @@ class _ClientHomeState extends State<ClientHome> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _fetchNotifications();
+  }
+
+  Future<void> _fetchNotifications() async {
+    final response = await http.get(Uri.parse(
+        '${Config.apiUrl}/notifications/getAll')); // Cambia la ruta según tu API
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _notifications = jsonDecode(response.body);
+      });
+    } else {
+      // Manejo de errores
+      print('Error en la solicitud: ${response.statusCode}');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Elimina el icono de "regresar"
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xFF6D3089),
         title: Row(
           children: [
             Image.asset(
-              'assets/images/logo_3.png', // Ruta de tu imagen
+              'assets/images/logo_3.png',
               fit: BoxFit.contain,
-              height: 32, // Altura de la imagen
+              height: 32,
             ),
-            SizedBox(width: 8), // Espacio entre la imagen y el texto
+            SizedBox(width: 8),
             Text(
               'Digital Event Hub',
               style: TextStyle(
@@ -50,13 +75,10 @@ class _ClientHomeState extends State<ClientHome> {
         ],
       ),
       endDrawer: Align(
-        alignment:
-            Alignment.topRight, // Alinea el Drawer a la parte superior derecha
+        alignment: Alignment.topRight,
         child: Container(
-          width: MediaQuery.of(context).size.width *
-              0.75, // Ajusta el ancho según sea necesario
-          height: MediaQuery.of(context).size.height *
-              0.75, // Ajusta la altura según sea necesario
+          width: MediaQuery.of(context).size.width * 0.75,
+          height: MediaQuery.of(context).size.height * 0.75,
           child: Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -67,14 +89,13 @@ class _ClientHomeState extends State<ClientHome> {
                     bottomRight: Radius.circular(30.0),
                   ),
                   child: Container(
-                    height: 250.0, // Ajusta esta altura según sea necesario
+                    height: 250.0,
                     color: Color(0xFF6D3089),
                     child: DrawerHeader(
                       margin: EdgeInsets.zero,
                       padding: EdgeInsets.all(20.0),
                       decoration: BoxDecoration(
-                        color: Colors
-                            .transparent, // Para que no sobreescriba el color del contenedor
+                        color: Colors.transparent,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -154,28 +175,50 @@ class _ClientHomeState extends State<ClientHome> {
           ),
         ),
       ),
-
-      body: _selectedIndex == 0
-          ? Center(child: Text('Home Cliente'))
-          : Center(
-              child: Text(
-                  'Configuración de la cuenta')), // Usa la pantalla de cuenta aquí
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Principal',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Cuenta',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
-      ),
+      body: _getBodyNotifications(),
     );
   }
-}
 
+  Widget _getBodyNotifications() {
+    if (_notifications.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: _notifications.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: ListTile(
+              contentPadding: EdgeInsets.all(10.0),
+              title: Text(
+                _notifications[index]['titulo'] ?? '',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_notifications[index]['cuerpo'] ?? ''),
+                  SizedBox(height: 5.0),
+                  Text(
+                    _notifications[index]['fecha'] ?? '',
+                    style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                  ),
+                ],
+              ),
+              leading: Icon(
+                Icons.notifications,
+                color: Colors.grey,
+                size: 30.0,
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+}
