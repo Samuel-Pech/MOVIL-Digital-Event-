@@ -1,153 +1,239 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'detail_event.dart';
+import 'package:http/http.dart' as http;
+import 'package:event_hub/config/conn_api.dart'; // Asegúrate de que este archivo exista y tenga la URL de la API
 
 class ListEvents extends StatefulWidget {
+  const ListEvents({Key? key}) : super(key: key);
+
   @override
-  _ListEventsState createState() => _ListEventsState();
+  State<ListEvents> createState() => _ListEventsState();
 }
 
 class _ListEventsState extends State<ListEvents> {
-  List<dynamic> events = [];
-  bool isLoading = true;
+  int _selectedIndex = 0;
+  List<dynamic> _events = [];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    fetchEvents();
+    _fetchEvents();
   }
 
-  Future<void> fetchEvents() async {
-    final response = await http.get(Uri.parse('http://localhost:4000/api/event/get/img'));
-    
+  Future<void> _fetchEvents() async {
+    final response = await http.get(
+      Uri.parse('${Config.apiUrl}/event/get/img'),
+    );
+
     if (response.statusCode == 200) {
       setState(() {
-        events = json.decode(response.body);
-        isLoading = false;
+        _events = jsonDecode(response.body);
       });
     } else {
-      // Handle the error
-      setState(() {
-        isLoading = false;
-      });
-      throw Exception('Failed to load events');
+      // Manejo de errores
+      print('Error en la solicitud: ${response.statusCode}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      endDrawer: Align(
+        alignment: Alignment.topRight,
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Color.fromARGB(255, 75, 4, 97)),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                    'Eventos creados',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+          width: MediaQuery.of(context).size.width * 0.75,
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  ),
+                  child: Container(
+                    height: 250.0,
+                    color: Color(0xFF6D3089),
+                    child: DrawerHeader(
+                      margin: EdgeInsets.zero,
+                      padding: EdgeInsets.all(20.0),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                            size: 95.0,
+                          ),
+                          SizedBox(height: 10.0),
+                          Text(
+                            'Brayan Canul Tamay',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 5.0),
+                          Text(
+                            'Cliente de Digital Event Hub',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : Expanded(
-                      child: ListView.builder(
-                        itemCount: events.length,
-                        itemBuilder: (context, index) {
-                          final event = events[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DetailEvent()),
-                              );
-                            },
-                            child: Card(
-                              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue[100],
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        event['fecha_inicio'],
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                event['hora'],
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                              SizedBox(height: 8.0),
-                                              Text(
-                                                event['nombre'],
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(width: 8.0),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          child: Image.network(
-                                            event['image_url'],
-                                            height: 60,
-                                            width: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-            ],
+                ListTile(
+                  leading: Icon(Icons.account_circle),
+                  title: Text('Perfil'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _onItemTapped(1);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text('Historial de compras'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _onItemTapped(0);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.notifications),
+                  title: Text('Notificaciones'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ListEvents()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.calendar_month),
+                  title: Text('Eventos próximos'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _onItemTapped(0);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text('Acerca de'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _onItemTapped(0);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
+      body: _getBodyEvents(),
     );
+  }
+
+  Widget _getBodyEvents() {
+    if (_events.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: _events.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              side: BorderSide(color: Colors.grey.shade300, width: 1.0),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _events[index]['nombre'] ?? '',
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Fecha: ${_events[index]['fecha_inicio']} - ${_events[index]['fecha_termino']}',
+                    style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    'Hora: ${_events[index]['hora']}',
+                    style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    'Ubicación: ${_events[index]['ubicacion']}',
+                    style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    'Estado: ${_events[index]['estado']}',
+                    style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      _events[index]['imagen_url'] ?? '',
+                      width: double.infinity,
+                      height: 200.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      _deleteEvent(_events[index]['evento_id'].toString()); // Convertir a String si es necesario
+                    },
+                    child: Text('Eliminar'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> _deleteEvent(String eventId) async {
+    final url = Uri.parse('${Config.apiUrl}/event/delete'); // Actualiza la URL DELETE según tu API
+
+    final response = await http.delete(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'evento_id': eventId}),
+    );
+
+    if (response.statusCode == 200) {
+      // Eliminación exitosa, actualiza la lista de eventos
+      _fetchEvents();
+    } else {
+      // Manejo de errores
+      print('Error al eliminar el evento: ${response.statusCode}');
+    }
   }
 }

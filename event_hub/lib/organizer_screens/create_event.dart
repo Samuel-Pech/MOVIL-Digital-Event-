@@ -62,10 +62,6 @@ class _CreateEventState extends State<CreateEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Registrar Evento'),
-        backgroundColor: Color(0xFF6D3089),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -98,7 +94,7 @@ class _CreateEventState extends State<CreateEvent> {
                 _buildDropdownField('Autorizado por', 'autorizado_por', [1, 2]),
                 _buildDateField('Fecha de autorización', 'fecha_autorizacion', TextEditingController()),
                 _buildDropdownField('ID de validación', 'validacion_id', [1, 2]),
-                _buildTextField('URL img', 'imagenes', TextInputType.text),
+                _buildTextField('URL img', 'imagen_url', TextInputType.text),
                 SizedBox(height: 32),
                 Center(
                   child: SizedBox(
