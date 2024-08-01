@@ -28,7 +28,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Future<void> _fetchNotifications() async {
     final response = await http.get(Uri.parse(
-        '${Config.apiUrl}/notifications/getAll')); // Cambia la ruta según tu API
+        '${Config.apiUrl}/notification/getAll')); // Cambia la ruta según tu API
 
     if (response.statusCode == 200) {
       setState(() {
@@ -195,17 +195,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
             ),
             child: ListTile(
               contentPadding: EdgeInsets.all(10.0),
-              title: Text(
-                _notifications[index]['titulo'] ?? '',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
+              // title: Text(
+              //   _notifications[index]['titulo'] ?? '',
+              //   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              // ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_notifications[index]['cuerpo'] ?? ''),
+                  Text(_notifications[index]['mensaje'] ?? ''),
                   SizedBox(height: 5.0),
                   Text(
-                    _notifications[index]['fecha'] ?? '',
+                    _notifications[index]['fecha_envio'] ?? '',
                     style: TextStyle(color: Colors.grey, fontSize: 12.0),
                   ),
                 ],

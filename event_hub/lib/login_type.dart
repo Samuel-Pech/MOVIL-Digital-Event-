@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:event_hub/login_client.dart';
-import 'package:event_hub/login_organizer.dart';
+
 
 class LoginType extends StatelessWidget {
   @override
@@ -101,29 +101,6 @@ class LoginType extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          backgroundColor: Color(0xFF6D3089),
-                          minimumSize: Size(double.infinity, 55),
-                        ),
-                        onPressed: () {
-                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginOrganizer()),
-                          );
-                        },
-                        child: Text(
-                          'Organizador',
-                          style: TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white),
-                        ),
-                      ),
                     ],
                   ),
                 ),
