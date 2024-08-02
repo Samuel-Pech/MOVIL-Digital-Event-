@@ -1,4 +1,5 @@
 import 'package:event_hub/client_screens/client_home.dart';
+import 'package:event_hub/client_screens/forgotPassword.dart';
 import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -14,12 +15,13 @@ class _LoginClientState extends State<LoginClient> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String? _usuarioId;
+  String? _email;
 
   Future<void> _login() async {
-    final String email = _emailController.text;
+    _email = _emailController.text;
     final String password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    if (_email!.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Por favor, ingresa tu correo y contraseña')),
       );
@@ -27,7 +29,7 @@ class _LoginClientState extends State<LoginClient> {
     }
 
     final Map<String, dynamic> requestBody = {
-      'email': email,
+      'email': _email,
       'contrasena': password,
     };
 
@@ -51,6 +53,7 @@ class _LoginClientState extends State<LoginClient> {
           // Usuario autenticado exitosamente
           _usuarioId = responseData['usuario_id']; // Guarda el usuario_id
           print('Usuario ID: $_usuarioId'); // Muestra el usuario_id en la consola
+          print('Email: $_email'); // Muestra el email en la consola
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Inicio de sesión exitoso')),
@@ -254,7 +257,7 @@ class _LoginClientState extends State<LoginClient> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ClientHome()),
+                            MaterialPageRoute(builder: (context) => ForgotPassword()),
                           );
                         },
                         child: Text(
