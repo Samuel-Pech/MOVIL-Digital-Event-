@@ -1,6 +1,8 @@
 import 'package:event_hub/client_screens/client_home.dart';
 import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginClient extends StatefulWidget {
   @override
@@ -9,6 +11,66 @@ class LoginClient extends StatefulWidget {
 
 class _LoginClientState extends State<LoginClient> {
   bool _obscureText = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? _usuarioId;
+
+  Future<void> _login() async {
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, ingresa tu correo y contraseña')),
+      );
+      return;
+    }
+
+    final Map<String, dynamic> requestBody = {
+      'email': email,
+      'contrasena': password,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://api-digitalevent.onrender.com/api/auth/login'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData.containsKey('error')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${responseData['error']}')),
+          );
+        } else {
+          // Usuario autenticado exitosamente
+          _usuarioId = responseData['usuario_id']; // Guarda el usuario_id
+          print('Usuario ID: $_usuarioId'); // Muestra el usuario_id en la consola
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Inicio de sesión exitoso')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ClientHome()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al iniciar sesión: ${response.body}')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error de conexión: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +181,7 @@ class _LoginClientState extends State<LoginClient> {
                         ),
                       ),
                       TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           hintText: '',
                           enabledBorder: OutlineInputBorder(
@@ -140,6 +203,7 @@ class _LoginClientState extends State<LoginClient> {
                         ),
                       ),
                       TextField(
+                        controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
                           hintText: '',
@@ -175,12 +239,7 @@ class _LoginClientState extends State<LoginClient> {
                           backgroundColor: Color(0xFF6D3089),
                           minimumSize: Size(double.infinity, 50),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ClientHome()),
-                          );
-                        },
+                        onPressed: _login,
                         child: Text(
                           'Continuar',
                           style: TextStyle(
