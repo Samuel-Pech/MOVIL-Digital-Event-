@@ -1,4 +1,5 @@
 import 'package:event_hub/client_screens/client_home.dart';
+import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
 
 class LoginClient extends StatefulWidget {
@@ -38,15 +39,13 @@ class _LoginClientState extends State<LoginClient> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Color(
-                                0xFF6D3089), // Color morado para la parte superior
+                            color: Color(0xFF6D3089), // Color morado para la parte superior
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Colors
-                                .white, // Color blanco para la parte inferior del contenedor superior
+                            color: Colors.white, // Color blanco para la parte inferior del contenedor superior
                           ),
                         ),
                       ],
@@ -70,8 +69,8 @@ class _LoginClientState extends State<LoginClient> {
                       child: Center(
                         child: Image.asset(
                           'assets/images/logo_2.png', // Reemplaza con la ruta de tu imagen
-                          height: 80, 
-                          width: 250,
+                          height: 70,
+                          width: 240,
                         ),
                       ),
                     ),
@@ -89,8 +88,7 @@ class _LoginClientState extends State<LoginClient> {
           Center(
             child: SizedBox(
               width: 330,
-              height:
-                  450, // Ajusta la altura para acomodar los campos de entrada
+              height: 490, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
               child: Card(
                 elevation: 7,
                 shape: RoundedRectangleBorder(
@@ -112,7 +110,7 @@ class _LoginClientState extends State<LoginClient> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 25),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -168,7 +166,7 @@ class _LoginClientState extends State<LoginClient> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 35),
+                      SizedBox(height: 25),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -180,8 +178,7 @@ class _LoginClientState extends State<LoginClient> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => ClientHome()),
+                            MaterialPageRoute(builder: (context) => ClientHome()),
                           );
                         },
                         child: Text(
@@ -190,6 +187,38 @@ class _LoginClientState extends State<LoginClient> {
                             fontSize: 19,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ClientHome()),
+                          );
+                        },
+                        child: Text(
+                          '¿Olvidaste tu contraseña?',
+                          style: TextStyle(
+                            color: Color(0xFF6D3089),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RegisterClient()),
+                          );
+                        },
+                        child: Text(
+                          '¿No tienes cuenta? Regístrate',
+                          style: TextStyle(
+                            color: Color(0xFF6D3089),
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -210,11 +239,9 @@ class InvertedWaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0.0, size.height);
-    var controlPoint =
-        Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
+    var controlPoint = Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
     var endPoint = Offset(size.width, size.height); // Ajustar según necesidades
-    path.quadraticBezierTo(
-        controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
+    path.quadraticBezierTo(controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0.0);
     path.close();
