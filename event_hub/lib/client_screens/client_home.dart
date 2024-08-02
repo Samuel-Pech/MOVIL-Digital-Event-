@@ -1,4 +1,5 @@
 import 'package:event_hub/client_screens/notifications_page.dart';
+import 'package:event_hub/client_screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class ClientHome extends StatefulWidget {
@@ -110,8 +111,11 @@ class _ClientHomeState extends State<ClientHome> {
                   leading: Icon(Icons.account_circle),
                   title: Text('Perfil'),
                   onTap: () {
-                    Navigator.pop(context);
-                    _onItemTapped(1);
+                   Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilePage()),
+                    );
                   },
                 ),
                 ListTile(

@@ -1,3 +1,4 @@
+import 'package:event_hub/client_screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:event_hub/default_home.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Digital Event Hub',
-      home: DefaultHome(),
+      home: ProfilePage(),
     );
   }
 }
