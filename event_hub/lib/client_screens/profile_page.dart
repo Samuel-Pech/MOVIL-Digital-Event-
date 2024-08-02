@@ -18,7 +18,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> fetchProfileData() async {
-    final response = await http.get(Uri.parse('${Config.apiUrl}/users/1'));
+    // Verificar si usuarioId no es null antes de continuar
+    if (UserData.usuarioId == null) {
+      print('Error: usuarioId es null');
+      return;
+    }
+
+    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    print('Usuario PROFILE ID: ${UserData.usuarioId}');
 
     if (response.statusCode == 200) {
       setState(() {
@@ -52,11 +59,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(profileData != null ? profileData!['fotoPerfil'] : 'URL_DE_TU_IMAGEN_DE_PERFIL'),
+                    backgroundImage: NetworkImage(profileData != null ? profileData!['fotoPerfil'] ?? 'URL_DE_TU_IMAGEN_DE_PERFIL' : 'URL_DE_TU_IMAGEN_DE_PERFIL'),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    profileData != null ? profileData!['nombre'] : 'Nombre del Usuario',
+                    profileData != null ? profileData!['nombre'] ?? 'Nombre del Usuario' : 'Nombre del Usuario',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -64,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Text(
-                    profileData != null ? profileData!['email'] : 'Email del Usuario',
+                    profileData != null ? profileData!['email'] ?? 'Email del Usuario' : 'Email del Usuario',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -153,3 +160,5 @@ class MenuCard extends StatelessWidget {
     );
   }
 }
+
+

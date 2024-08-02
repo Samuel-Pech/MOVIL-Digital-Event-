@@ -3,6 +3,8 @@ import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:event_hub/config/conn_api.dart'; // Importar el archivo conn_api.dart
+
 
 class LoginClient extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _LoginClientState extends State<LoginClient> {
   bool _obscureText = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _usuarioId;
+
 
   Future<void> _login() async {
     final String email = _emailController.text;
@@ -49,8 +51,8 @@ class _LoginClientState extends State<LoginClient> {
           );
         } else {
           // Usuario autenticado exitosamente
-          _usuarioId = responseData['usuario_id']; // Guarda el usuario_id
-          print('Usuario ID: $_usuarioId'); // Muestra el usuario_id en la consola
+          UserData.usuarioId  = responseData['user']['usuario_id'].toString(); // Guarda el usuario_id
+          print('Usuario ID: ${UserData.usuarioId}');// Muestra el usuario_id en la consola
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Inicio de sesión exitoso')),
