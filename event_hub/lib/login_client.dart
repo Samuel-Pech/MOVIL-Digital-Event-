@@ -169,13 +169,13 @@ class _LoginClientState extends State<LoginClient> {
                         child: Text(
                           'Te damos la bienvenida a Digital Event Hub',
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 15),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -233,7 +233,7 @@ class _LoginClientState extends State<LoginClient> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 18),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -252,7 +252,7 @@ class _LoginClientState extends State<LoginClient> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 18),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(

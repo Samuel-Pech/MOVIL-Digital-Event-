@@ -150,7 +150,7 @@ class _RegisterClientState extends State<RegisterClient> {
           ),
           Center(
             child: SizedBox(
-              width: 400,
+              width: 350,
               height:
                   600, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
               child: Card(
