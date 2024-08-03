@@ -37,6 +37,19 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  String getRoleText(int? roleId) {
+    switch (roleId) {
+      case 1:
+        return 'Administrador';
+      case 2:
+        return 'Usuario';
+      case 3:
+        return 'Organizador';
+      default:
+        return 'Sin rol';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,87 +57,103 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: 250,
-              color: Color(0xFF6D3089),
-              child: Column(
-                children: [
-                  SizedBox(height: 50),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Icon(Icons.edit, color: Colors.white),
+            Stack(
+              children: [
+                Container(
+                  height: 200,
+                  color: Color(0xFF6D3089), // Fondo azul claro
+                ),
+                Positioned(
+                  top: 80,
+                  left: MediaQuery.of(context).size.width / 2 - 50,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey[200],
+                    child: ClipOval(
+                      child: Image.network(
+                        profileData != null
+                            ? profileData!['fotoPerfil'] ?? 'https://w7.pngwing.com/pngs/916/294/png-transparent-tweety-gangster-looney-tunes-character-gangsta-gun-weapon-mafia-boss-smoking.png'
+                            : 'https://w7.pngwing.com/pngs/916/294/png-transparent-tweety-gangster-looney-tunes-character-gangsta-gun-weapon-mafia-boss-smoking.png',
+                        width: 400,
+                        height: 400,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/user.png', // Imagen local en caso de error
+                            width: 400,
+                            height: 400,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(profileData != null ? profileData!['fotoPerfil'] ?? 'URL_DE_TU_IMAGEN_DE_PERFIL' : 'URL_DE_TU_IMAGEN_DE_PERFIL'),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    profileData != null ? profileData!['nombre'] ?? 'Nombre del Usuario' : 'Nombre del Usuario',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    profileData != null ? profileData!['email'] ?? 'Email del Usuario' : 'Email del Usuario',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Row(
+                ),
+              ],
+            ),
+             SizedBox(height: 20),
+             Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.verified, color: Colors.yellow, size: 16),
                       SizedBox(width: 5),
                       Text(
-                        'Verified',
-                        style: TextStyle(color: Colors.white),
+                        'Verificado',
+                        style: TextStyle(color: Colors.black54),
                       ),
                     ],
                   ),
-                ],
+            SizedBox(height: 10),
+            Text(
+              profileData != null
+                  ? '${profileData!['nombre'] ?? ''} ${profileData!['last_name'] ?? ''}'
+                  : 'Nombre del Usuario',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'GENERAL',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  MenuCard(
-                    icon: Icons.settings,
-                    title: 'Profile Settings',
-                    subtitle: 'Update and modify your profile',
-                    onTap: () {},
-                  ),
-                  MenuCard(
-                    icon: Icons.lock,
-                    title: 'Privacy',
-                    subtitle: 'Change your password',
-                    onTap: () {},
-                  ),
-                  MenuCard(
-                    icon: Icons.notifications,
-                    title: 'Notifications',
-                    subtitle: 'Change your notification settings',
-                    onTap: () {},
-                  ),
-                ],
+            SizedBox(height: 10),
+            Text(
+              profileData != null
+                  ? profileData!['email'] ?? 'Email del Usuario'
+                  : 'Email del Usuario',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 18,
               ),
+            ),
+            SizedBox(height: 20),
+            ProfileInfoRow(
+              leftTitle: 'Phone',
+              leftValue: profileData != null
+                  ? profileData!['telefono']?.toString() ?? 'No phone number'
+                  : 'No phone number',
+              rightTitle: 'Role',
+              rightValue: profileData != null
+                  ? getRoleText(profileData!['rol_id'])
+                  : 'Sin rol',
+            ),
+            ProfileInfoRow(
+              leftTitle: 'Membership ID',
+              leftValue: profileData != null
+                  ? profileData!['membresia_id']?.toString() ?? 'No membership ID'
+                  : 'No membership ID',
+              rightTitle: 'Status',
+              rightValue: profileData != null && profileData!['activo'] == true
+                  ? 'Activo'
+                  : 'Inactivo',
+            ),
+            ProfileInfoRow(
+              leftTitle: 'Password Reset Token',
+              leftValue: profileData != null
+                  ? profileData!['resetPasswordToken'] ?? 'No reset token'
+                  : 'No reset token',
+              rightTitle: 'Reset Expire',
+              rightValue: profileData != null
+                  ? profileData!['resetPasswordExpire'] ?? 'No expiration date'
+                  : 'No expiration date',
             ),
           ],
         ),
@@ -133,32 +162,81 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class MenuCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+class ProfileInfoRow extends StatelessWidget {
+  final String leftTitle;
+  final String leftValue;
+  final String rightTitle;
+  final String rightValue;
 
-  MenuCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
+  ProfileInfoRow({
+    required this.leftTitle,
+    required this.leftValue,
+    required this.rightTitle,
+    required this.rightValue,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        leading: Icon(icon, size: 30, color: Color(0xFF6D3089)),
-        title: Text(title, style: TextStyle(fontSize: 18)),
-        subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey)),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: onTap,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ProfileInfoCard(title: leftTitle, value: leftValue),
+          ProfileInfoCard(title: rightTitle, value: rightValue),
+        ],
       ),
     );
   }
 }
 
+class ProfileInfoCard extends StatelessWidget {
+  final String title;
+  final String value;
 
+  ProfileInfoCard({
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4.0,
+              spreadRadius: 2.0,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
