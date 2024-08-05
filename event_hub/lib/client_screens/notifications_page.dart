@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:event_hub/config/conn_api.dart'; // Asegúrate de que este archivo exista y tenga la URL de la API
+import 'package:event_hub/config/conn_api.dart'; 
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -12,6 +12,7 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   int _selectedIndex = 0;
+  Map<String, dynamic>? profileData;
   List<dynamic> _notifications = [];
 
   void _onItemTapped(int index) {
@@ -24,18 +25,36 @@ class _NotificationsPageState extends State<NotificationsPage> {
   void initState() {
     super.initState();
     _fetchNotifications();
+    fetchProfileData();
+  }
+
+  Future<void> fetchProfileData() async {
+    if (UserData.usuarioId == null) {
+      print('Error: usuarioId es null');
+      return;
+    }
+
+    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    print('Usuario PROFILE ID: ${UserData.usuarioId}');
+
+    if (response.statusCode == 200) {
+      setState(() {
+        profileData = json.decode(response.body);
+      });
+    } else {
+      print('Error al obtener los datos del perfil: ${response.statusCode}');
+    }
   }
 
   Future<void> _fetchNotifications() async {
     final response = await http.get(Uri.parse(
-        '${Config.apiUrl}/notification/getAll')); // Cambia la ruta según tu API
+        '${Config.apiUrl}/notification/getAll'));
 
     if (response.statusCode == 200) {
       setState(() {
         _notifications = jsonDecode(response.body);
       });
     } else {
-      // Manejo de errores
       print('Error en la solicitud: ${response.statusCode}');
     }
   }
@@ -107,13 +126,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             size: 95.0,
                           ),
                           SizedBox(height: 10.0),
-                          Text(
-                            'Brayan Canul Tamay',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
+                           Text(
+                      profileData != null ? '${profileData!['nombre']} ${profileData!['last_name']}'  : 'Cargando...',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
                           SizedBox(height: 5.0),
                           Text(
                             'Cliente de Digital Event Hub',
@@ -188,32 +208,47 @@ class _NotificationsPageState extends State<NotificationsPage> {
       return ListView.builder(
         itemCount: _notifications.length,
         itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(10.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(10.0),
-              // title: Text(
-              //   _notifications[index]['titulo'] ?? '',
-              //   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              // ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_notifications[index]['mensaje'] ?? ''),
-                  SizedBox(height: 5.0),
-                  Text(
-                    _notifications[index]['fecha_envio'] ?? '',
-                    style: TextStyle(color: Colors.grey, fontSize: 12.0),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
-              leading: Icon(
-                Icons.notifications,
-                color: Colors.grey,
-                size: 30.0,
+              child: ListTile(
+                contentPadding: EdgeInsets.all(15.0),
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(_notifications[index]['avatarUrl'] ?? 'https://via.placeholder.com/150'),
+                  radius: 25.0,
+                ),
+                title: Text(
+                  _notifications[index]['titulo'] ?? 'Notificación',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 5.0),
+                    Text(
+                      _notifications[index]['mensaje'] ?? '',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      _notifications[index]['fecha_envio'] ?? '',
+                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                    ),
+                  ],
+                ),
+              
               ),
             ),
           );

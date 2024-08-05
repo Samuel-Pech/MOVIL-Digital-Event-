@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:event_hub/client_screens/editProfile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:event_hub/config/conn_api.dart'; // Importar el archivo conn_api.dart
@@ -15,6 +16,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     fetchProfileData();
+  }
+
+   void updateProfile() {
+    fetchProfileData(); 
   }
 
   Future<void> fetchProfileData() async {
@@ -62,6 +67,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   height: 200,
                   color: Color(0xFF6D3089), // Fondo azul claro
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    icon: Icon(Icons.edit, color: Colors.white),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditProfilePage(),
+                        )
+                      );
+                    },
+                  ),
                 ),
                 Positioned(
                   top: 80,
@@ -240,3 +259,5 @@ class ProfileInfoCard extends StatelessWidget {
     );
   }
 }
+
+

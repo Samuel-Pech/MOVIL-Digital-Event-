@@ -1,6 +1,10 @@
+import 'package:event_hub/client_screens/count_client.dart';
 import 'package:event_hub/client_screens/notifications_page.dart';
 import 'package:event_hub/client_screens/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:event_hub/config/conn_api.dart'; 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ClientHome extends StatefulWidget {
   @override
@@ -8,7 +12,35 @@ class ClientHome extends StatefulWidget {
 }
 
 class _ClientHomeState extends State<ClientHome> {
+  Map<String, dynamic>? profileData;
   int _selectedIndex = 0;
+
+    @override
+  void initState() {
+    super.initState();
+    fetchProfileData();
+  }
+
+  Future<void> fetchProfileData() async {
+    // Verificar si usuarioId no es null antes de continuar
+    if (UserData.usuarioId == null) {
+      print('Error: usuarioId es null');
+      return;
+    }
+
+    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    print('Usuario PROFILE ID: ${UserData.usuarioId}');
+
+    if (response.statusCode == 200) {
+      setState(() {
+        profileData = json.decode(response.body);
+      });
+    } else {
+      // Manejar el error
+      print('Error al obtener los datos del perfil: ${response.statusCode}');
+    }
+  }
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -87,13 +119,14 @@ class _ClientHomeState extends State<ClientHome> {
                             size: 95.0,
                           ),
                           SizedBox(height: 10.0),
-                          Text(
-                            'Brayan Canul Tamay',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
+                        Text(
+                      profileData != null ? '${profileData!['nombre']} ${profileData!['last_name']}'  : 'Cargando...',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
                           SizedBox(height: 5.0),
                           Text(
                             'Cliente de Digital Event Hub',
@@ -161,9 +194,7 @@ class _ClientHomeState extends State<ClientHome> {
 
       body: _selectedIndex == 0
           ? Center(child: Text('Home Cliente'))
-          : Center(
-              child: Text(
-                  'Configuración de la cuenta')), // Usa la pantalla de cuenta aquí
+          : CountClient(), // Usa la pantalla de cuenta aquí
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
