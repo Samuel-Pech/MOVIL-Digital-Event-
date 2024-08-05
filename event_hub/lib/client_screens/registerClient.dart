@@ -15,13 +15,29 @@ class _RegisterClientState extends State<RegisterClient> {
   final TextEditingController _contrasenaController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _resetPasswordExpireController = TextEditingController();
-  final TextEditingController _resetPasswordTokenController = TextEditingController();
+  final TextEditingController _resetPasswordExpireController =
+      TextEditingController();
+  final TextEditingController _resetPasswordTokenController =
+      TextEditingController();
   final TextEditingController _fotoPerfilController = TextEditingController();
-  final TextEditingController _membresiaIdController = TextEditingController(); // Controlador para membresía
+  final TextEditingController _membresiaIdController =
+      TextEditingController(); // Controlador para membresía
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
+      // Imprime los valores para depuración
+      print("Nombre: ${_nombreController.text}");
+      print("Email: ${_emailController.text}");
+      print("Contraseña: ${_contrasenaController.text}");
+      print("Teléfono: ${_telefonoController.text}");
+      print("Apellido: ${_lastNameController.text}");
+      print("Membresía ID: ${_membresiaIdController.text}");
+      print(
+          "Expiración de Restablecimiento de Contraseña: ${_resetPasswordExpireController.text}");
+      print(
+          "Token de Restablecimiento de Contraseña: ${_resetPasswordTokenController.text}");
+      print("Foto de Perfil: ${_fotoPerfilController.text}");
+
       // Crear el cuerpo de la solicitud con los datos del formulario y valores por defecto
       final Map<String, dynamic> requestBody = {
         'nombre': _nombreController.text,
@@ -47,7 +63,7 @@ class _RegisterClientState extends State<RegisterClient> {
           body: json.encode(requestBody),
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
           // Manejar la respuesta exitosa
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Registro exitoso')),
@@ -96,13 +112,15 @@ class _RegisterClientState extends State<RegisterClient> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Color(0xFF6D3089), // Color morado para la parte superior
+                            color: Color(
+                                0xFF6D3089), // Color morado para la parte superior
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Colors.white, // Color blanco para la parte inferior del contenedor superior
+                            color: Colors
+                                .white, // Color blanco para la parte inferior del contenedor superior
                           ),
                         ),
                       ],
@@ -132,8 +150,9 @@ class _RegisterClientState extends State<RegisterClient> {
           ),
           Center(
             child: SizedBox(
-              width: 400,
-              height: 600, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
+              width: 350,
+              height:
+                  600, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
               child: Card(
                 elevation: 7,
                 shape: RoundedRectangleBorder(
@@ -165,19 +184,29 @@ class _RegisterClientState extends State<RegisterClient> {
                                 SizedBox(height: 15),
                                 _buildTextField("Email", _emailController),
                                 SizedBox(height: 15),
-                                _buildTextField("Contraseña", _contrasenaController, obscureText: _obscureText),
+                                _buildTextField(
+                                    "Contraseña", _contrasenaController,
+                                    obscureText: _obscureText),
                                 SizedBox(height: 15),
-                                _buildTextField("Teléfono", _telefonoController),
+                                _buildTextField(
+                                    "Teléfono", _telefonoController),
                                 SizedBox(height: 15),
-                                _buildTextField("Apellido", _lastNameController),
+                                _buildTextField(
+                                    "Apellido", _lastNameController),
                                 SizedBox(height: 15),
-                                _buildTextField("Membresía ID", _membresiaIdController), // Campo de membresía
+                                _buildTextField("Membresía ID",
+                                    _membresiaIdController), // Campo de membresía
                                 SizedBox(height: 15),
-                                _buildTextField("Expiración de Restablecimiento de Contraseña", _resetPasswordExpireController),
+                                _buildTextField(
+                                    "Expiración de Restablecimiento de Contraseña",
+                                    _resetPasswordExpireController),
                                 SizedBox(height: 15),
-                                _buildTextField("Token de Restablecimiento de Contraseña", _resetPasswordTokenController),
+                                _buildTextField(
+                                    "Token de Restablecimiento de Contraseña",
+                                    _resetPasswordTokenController),
                                 SizedBox(height: 15),
-                                _buildTextField("Foto de Perfil", _fotoPerfilController),
+                                _buildTextField(
+                                    "Foto de Perfil", _fotoPerfilController),
                                 SizedBox(height: 35),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
@@ -187,13 +216,14 @@ class _RegisterClientState extends State<RegisterClient> {
                                     backgroundColor: Color(0xFF6D3089),
                                     minimumSize: Size(double.infinity, 50),
                                   ),
-                                  onPressed: _registerUser, // Llama al método _registerUser cuando se presiona el botón
+                                  onPressed:
+                                      _registerUser, // Llama al método _registerUser cuando se presiona el botón
                                   child: Text(
                                     'Registrarse',
                                     style: TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white),
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -212,7 +242,8 @@ class _RegisterClientState extends State<RegisterClient> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, {bool obscureText = false}) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool obscureText = false}) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -255,9 +286,11 @@ class InvertedWaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0.0, size.height);
-    var controlPoint = Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
+    var controlPoint =
+        Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
     var endPoint = Offset(size.width, size.height); // Ajustar según necesidades
-    path.quadraticBezierTo(controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
+    path.quadraticBezierTo(
+        controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0.0);
     path.close();
