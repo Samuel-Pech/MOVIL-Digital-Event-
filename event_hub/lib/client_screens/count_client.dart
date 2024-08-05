@@ -1,7 +1,7 @@
 import 'package:event_hub/client_screens/profile_page.dart';
 import 'package:event_hub/login_client.dart';
 import 'package:flutter/material.dart';
-import 'package:event_hub/config/conn_api.dart'; 
+import 'package:event_hub/config/conn_api.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -26,7 +26,8 @@ class _CountClientState extends State<CountClient> {
       return;
     }
 
-    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    final response = await http
+        .get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
     print('Usuario PROFILE ID: ${UserData.usuarioId}');
 
     if (response.statusCode == 200) {
@@ -46,7 +47,8 @@ class _CountClientState extends State<CountClient> {
       return;
     }
 
-    final response = await http.delete(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    final response = await http
+        .delete(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -65,7 +67,8 @@ class _CountClientState extends State<CountClient> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirmar borrado de cuenta'),
-          content: Text('¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.'),
+          content: Text(
+              '¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -75,7 +78,10 @@ class _CountClientState extends State<CountClient> {
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop(); // Cierra el diálogo
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginClient()),
+                ); // Cierra el diálogo
                 await fetchDeleteProfile(); // Llama a la función para borrar la cuenta
               },
               child: Text('Confirmar'),
@@ -104,14 +110,18 @@ class _CountClientState extends State<CountClient> {
                 CircleAvatar(
                   radius: 25,
                   backgroundImage: NetworkImage(
-                      'https://th.bing.com/th/id/OIP.5q5jb3VzIHsa8xgJGGHPlQHaHa?rs=1&pid=ImgDetMain'), // Reemplaza con la URL de tu imagen
+                    profileData?['fotoPerfil'] ??
+                        'https://th.bing.com/th/id/OIP.5q5jb3VzIHsa8xgJGGHPlQHaHa?rs=1&pid=ImgDetMain',
+                  ),
                 ),
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      profileData != null ? '${profileData!['nombre']} ${profileData!['last_name']}' : 'Cargando...',
+                      profileData != null
+                          ? '${profileData!['nombre']} ${profileData!['last_name']}'
+                          : 'Cargando...',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -258,10 +268,10 @@ class _CountClientState extends State<CountClient> {
             ),
             onTap: () {
               Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginClient(),
-                        )
-                      );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginClient(),
+                  ));
             },
           ),
           ListTile(

@@ -1,4 +1,5 @@
 import 'package:event_hub/client_screens/client_home.dart';
+import 'package:event_hub/client_screens/forgotPassword.dart';
 import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -256,7 +257,7 @@ class _LoginClientState extends State<LoginClient> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ClientHome()),
+                            MaterialPageRoute(builder: (context) => ForgotPassword()),
                           );
                         },
                         child: Text(

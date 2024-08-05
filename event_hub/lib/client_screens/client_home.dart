@@ -15,7 +15,7 @@ class _ClientHomeState extends State<ClientHome> {
   Map<String, dynamic>? profileData;
   int _selectedIndex = 0;
 
-    @override
+  @override
   void initState() {
     super.initState();
     fetchProfileData();
@@ -40,7 +40,6 @@ class _ClientHomeState extends State<ClientHome> {
       print('Error al obtener los datos del perfil: ${response.statusCode}');
     }
   }
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -83,13 +82,10 @@ class _ClientHomeState extends State<ClientHome> {
         ],
       ),
       endDrawer: Align(
-        alignment:
-            Alignment.topRight, // Alinea el Drawer a la parte superior derecha
+        alignment: Alignment.topRight, // Alinea el Drawer a la parte superior derecha
         child: Container(
-          width: MediaQuery.of(context).size.width *
-              0.75, // Ajusta el ancho según sea necesario
-          height: MediaQuery.of(context).size.height *
-              0.75, // Ajusta la altura según sea necesario
+          width: MediaQuery.of(context).size.width * 0.75, // Ajusta el ancho según sea necesario
+          height: MediaQuery.of(context).size.height * 0.75, // Ajusta la altura según sea necesario
           child: Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -106,27 +102,34 @@ class _ClientHomeState extends State<ClientHome> {
                       margin: EdgeInsets.zero,
                       padding: EdgeInsets.all(20.0),
                       decoration: BoxDecoration(
-                        color: Colors
-                            .transparent, // Para que no sobreescriba el color del contenedor
+                        color: Colors.transparent, // Para que no sobreescriba el color del contenedor
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 95.0,
-                          ),
+                          profileData != null && profileData!['fotoPerfil'] != null
+                              ? CircleAvatar(
+                                  radius: 47.5, // Ajusta el radio según sea necesario
+                                  backgroundImage: NetworkImage(profileData!['fotoPerfil']),
+                                  backgroundColor: Colors.transparent,
+                                )
+                              : Icon(
+                                  Icons.account_circle,
+                                  color: Colors.white,
+                                  size: 95.0,
+                                ),
                           SizedBox(height: 10.0),
-                        Text(
-                      profileData != null ? '${profileData!['nombre']} ${profileData!['last_name']}'  : 'Cargando...',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
+                          Text(
+                            profileData != null
+                                ? '${profileData!['nombre']} ${profileData!['last_name']}'
+                                : 'Cargando...',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
                           SizedBox(height: 5.0),
                           Text(
                             'Cliente de Digital Event Hub',
@@ -144,10 +147,9 @@ class _ClientHomeState extends State<ClientHome> {
                   leading: Icon(Icons.account_circle),
                   title: Text('Perfil'),
                   onTap: () {
-                   Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ProfilePage()),
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
                     );
                   },
                 ),
@@ -165,8 +167,7 @@ class _ClientHomeState extends State<ClientHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationsPage()),
+                      MaterialPageRoute(builder: (context) => NotificationsPage()),
                     );
                   },
                 ),
@@ -191,7 +192,6 @@ class _ClientHomeState extends State<ClientHome> {
           ),
         ),
       ),
-
       body: _selectedIndex == 0
           ? Center(child: Text('Home Cliente'))
           : CountClient(), // Usa la pantalla de cuenta aquí
@@ -213,4 +213,3 @@ class _ClientHomeState extends State<ClientHome> {
     );
   }
 }
-
