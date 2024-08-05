@@ -1,9 +1,10 @@
 import 'package:event_hub/client_screens/client_home.dart';
-import 'package:event_hub/client_screens/forgotPassword.dart';
 import 'package:event_hub/client_screens/registerClient.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:event_hub/config/conn_api.dart'; // Importar el archivo conn_api.dart
+
 
 class LoginClient extends StatefulWidget {
   @override
@@ -14,14 +15,13 @@ class _LoginClientState extends State<LoginClient> {
   bool _obscureText = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _usuarioId;
-  String? _email;
+
 
   Future<void> _login() async {
-    _email = _emailController.text;
+    final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    if (_email!.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Por favor, ingresa tu correo y contraseña')),
       );
@@ -29,7 +29,7 @@ class _LoginClientState extends State<LoginClient> {
     }
 
     final Map<String, dynamic> requestBody = {
-      'email': _email,
+      'email': email,
       'contrasena': password,
     };
 
@@ -51,9 +51,8 @@ class _LoginClientState extends State<LoginClient> {
           );
         } else {
           // Usuario autenticado exitosamente
-          _usuarioId = responseData['usuario_id']; // Guarda el usuario_id
-          print('Usuario ID: $_usuarioId'); // Muestra el usuario_id en la consola
-          print('Email: $_email'); // Muestra el email en la consola
+          UserData.usuarioId  = responseData['user']['usuario_id'].toString(); // Guarda el usuario_id
+          print('Usuario ID: ${UserData.usuarioId}');// Muestra el usuario_id en la consola
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Inicio de sesión exitoso')),
@@ -169,13 +168,13 @@ class _LoginClientState extends State<LoginClient> {
                         child: Text(
                           'Te damos la bienvenida a Digital Event Hub',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: 25),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -233,7 +232,7 @@ class _LoginClientState extends State<LoginClient> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 18),
+                      SizedBox(height: 25),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -252,12 +251,12 @@ class _LoginClientState extends State<LoginClient> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 18),
+                      SizedBox(height: 25),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ForgotPassword()),
+                            MaterialPageRoute(builder: (context) => ClientHome()),
                           );
                         },
                         child: Text(
