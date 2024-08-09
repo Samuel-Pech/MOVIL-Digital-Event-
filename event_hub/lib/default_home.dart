@@ -1,4 +1,4 @@
-import 'package:event_hub/events_home.dart';
+import 'package:event_hub/home_init.dart';
 import 'package:flutter/material.dart';
 import 'login_type.dart'; // Importa el archivo de la pantalla de cuenta
 
@@ -41,7 +41,7 @@ class _DefaultHomeState extends State<DefaultHome> {
       ),
 
       body: _selectedIndex == 0 
-        ? EventHome() 
+        ? HomeInit() 
 
         : LoginType(), // Usa la pantalla de cuenta aquí
 
@@ -54,7 +54,7 @@ class _DefaultHomeState extends State<DefaultHome> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            label: 'Cuenta',
+            label: 'Iniciar sesión',
           ),
         ],
         currentIndex: _selectedIndex,

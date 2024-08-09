@@ -1,10 +1,12 @@
 import 'package:event_hub/client_screens/count_client.dart';
 import 'package:event_hub/client_screens/notifications_page.dart';
 import 'package:event_hub/client_screens/profile_page.dart';
+import 'package:event_hub/client_screens/event_history.dart';
 import 'package:flutter/material.dart';
-import 'package:event_hub/config/conn_api.dart'; 
+import 'package:event_hub/config/conn_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'event_home.dart';  // Importa el nuevo archivo
 
 class ClientHome extends StatefulWidget {
   @override
@@ -22,21 +24,18 @@ class _ClientHomeState extends State<ClientHome> {
   }
 
   Future<void> fetchProfileData() async {
-    // Verificar si usuarioId no es null antes de continuar
     if (UserData.usuarioId == null) {
       print('Error: usuarioId es null');
       return;
     }
 
     final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
-    print('Usuario PROFILE ID: ${UserData.usuarioId}');
 
     if (response.statusCode == 200) {
       setState(() {
         profileData = json.decode(response.body);
       });
     } else {
-      // Manejar el error
       print('Error al obtener los datos del perfil: ${response.statusCode}');
     }
   }
@@ -51,21 +50,22 @@ class _ClientHomeState extends State<ClientHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Elimina el icono de "regresar"
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xFF6D3089),
         title: Row(
           children: [
             Image.asset(
-              'assets/images/logo_3.png', // Ruta de tu imagen
+              'assets/images/logo_3.png',
               fit: BoxFit.contain,
-              height: 32, // Altura de la imagen
+              height: 32,
             ),
-            SizedBox(width: 8), // Espacio entre la imagen y el texto
+            SizedBox(width: 8),
             Text(
               'Digital Event Hub',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
@@ -81,120 +81,73 @@ class _ClientHomeState extends State<ClientHome> {
           ),
         ],
       ),
-      endDrawer: Align(
-        alignment: Alignment.topRight, // Alinea el Drawer a la parte superior derecha
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.75, // Ajusta el ancho según sea necesario
-          height: MediaQuery.of(context).size.height * 0.75, // Ajusta la altura según sea necesario
-          child: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0),
-                  ),
-                  child: Container(
-                    height: 250.0, // Ajusta esta altura según sea necesario
-                    color: Color(0xFF6D3089),
-                    child: DrawerHeader(
-                      margin: EdgeInsets.zero,
-                      padding: EdgeInsets.all(20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent, // Para que no sobreescriba el color del contenedor
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          profileData != null && profileData!['fotoPerfil'] != null
-                              ? CircleAvatar(
-                                  radius: 47.5, // Ajusta el radio según sea necesario
-                                  backgroundImage: NetworkImage(profileData!['fotoPerfil']),
-                                  backgroundColor: Colors.transparent,
-                                )
-                              : Icon(
-                                  Icons.account_circle,
-                                  color: Colors.white,
-                                  size: 95.0,
-                                ),
-                          SizedBox(height: 10.0),
-                          Text(
-                            profileData != null
-                                ? '${profileData!['nombre']} ${profileData!['last_name']}'
-                                : 'Cargando...',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                          ),
-                          SizedBox(height: 5.0),
-                          Text(
-                            'Cliente de Digital Event Hub',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF6D3089),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0),
+                ),
+              ),
+              accountName: Text(
+                profileData != null
+                    ? '${profileData!['nombre']} ${profileData!['last_name']}'
+                    : 'Cargando...',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              accountEmail: Text(
+                'Cliente de Digital Event Hub',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+              currentAccountPicture: profileData != null && profileData!['fotoPerfil'] != null
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(profileData!['fotoPerfil']),
+                    )
+                  : Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                      size: 60.0,
                     ),
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text('Perfil'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text('Historial de compras'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _onItemTapped(0);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.notifications),
-                  title: Text('Notificaciones'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NotificationsPage()),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.calendar_month),
-                  title: Text('Eventos próximos'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _onItemTapped(0);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.info),
-                  title: Text('Acerca de'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _onItemTapped(0);
-                  },
-                ),
-              ],
             ),
-          ),
+            _createDrawerItem(
+              icon: Icons.account_circle,
+              text: 'Perfil',
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage())),
+            ),
+            _createDrawerItem(
+              icon: Icons.history,
+              text: 'Historial de compras',
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => EventHistory())),
+            ),
+            _createDrawerItem(
+              icon: Icons.notifications,
+              text: 'Notificaciones',
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage())),
+            ),
+            _createDrawerItem(
+              icon: Icons.calendar_month,
+              text: 'Eventos próximos',
+              onTap: () => _onItemTapped(0),
+            ),
+            _createDrawerItem(
+              icon: Icons.info,
+              text: 'Acerca de',
+              onTap: () => _onItemTapped(0),
+            ),
+          ],
         ),
       ),
-      body: _selectedIndex == 0
-          ? Center(child: Text('Home Cliente'))
-          : CountClient(), // Usa la pantalla de cuenta aquí
+      body: _selectedIndex == 0 ? EventHome() : CountClient(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -207,9 +160,20 @@ class _ClientHomeState extends State<ClientHome> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
+        selectedItemColor: Color(0xFF6D3089),
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
       ),
+    );
+  }
+
+  ListTile _createDrawerItem({required IconData icon, required String text, required GestureTapCallback onTap}) {
+    return ListTile(
+      leading: Icon(icon, color: Color(0xFF6D3089)),
+      title: Text(text, style: TextStyle(fontSize: 16)),
+      onTap: onTap,
     );
   }
 }

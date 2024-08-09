@@ -83,30 +83,30 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                Positioned(
-  top: 30,
-  left: MediaQuery.of(context).size.width / 2 - 75, // Ajuste del desplazamiento horizontal
-  child: CircleAvatar(
-    radius: 75, // Aumentar el radio para hacerlo más grande
-    backgroundColor: Colors.grey[200],
-    child: ClipOval(
-      child: Image.network(
-             profileData?['fotoPerfil'] ??
-                        'https://th.bing.com/th/id/OIP.5q5jb3VzIHsa8xgJGGHPlQHaHa?rs=1&pid=ImgDetMain',
-        width: 600, // Aumentar el ancho de la imagen
-        height: 600, // Aumentar la altura de la imagen
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Image.asset(
-            'assets/images/user.png', // Imagen local en caso de error
-            width: 600, // Aumentar el ancho de la imagen local
-            height: 600, // Aumentar la altura de la imagen local
-            fit: BoxFit.cover,
-          );
-        },
-      ),
-    ),
-  ),
-),
+              top: 30,
+              left: MediaQuery.of(context).size.width / 2 - 75, // Ajuste del desplazamiento horizontal
+              child: CircleAvatar(
+                radius: 75, // Aumentar el radio para hacerlo más grande
+                backgroundColor: Colors.grey[200],
+                child: ClipOval(
+                  child: Image.network(
+                        profileData?['fotoPerfil'] ??
+                                    'https://th.bing.com/th/id/OIP.5q5jb3VzIHsa8xgJGGHPlQHaHa?rs=1&pid=ImgDetMain',
+                    width: 600, // Aumentar el ancho de la imagen
+                    height: 600, // Aumentar la altura de la imagen
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/user.png', // Imagen local en caso de error
+                        width: 600, // Aumentar el ancho de la imagen local
+                        height: 600, // Aumentar la altura de la imagen local
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
               ],
             ),
              SizedBox(height: 20),
