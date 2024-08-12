@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:event_hub/config/conn_api.dart'; // Importar el archivo conn_api.dart
 
-
 class LoginClient extends StatefulWidget {
   @override
   _LoginClientState createState() => _LoginClientState();
@@ -16,7 +15,6 @@ class _LoginClientState extends State<LoginClient> {
   bool _obscureText = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
 
   Future<void> _login() async {
     final String email = _emailController.text;
@@ -52,9 +50,11 @@ class _LoginClientState extends State<LoginClient> {
           );
         } else {
           // Usuario autenticado exitosamente
-          UserData.usuarioId  = responseData['user']['usuario_id'].toString(); // Guarda el usuario_id
-          print('Usuario ID: ${UserData.usuarioId}');// Muestra el usuario_id en la consola
-          
+          UserData.usuarioId = responseData['user']['usuario_id']
+              .toString(); // Guarda el usuario_id
+          print(
+              'Usuario ID: ${UserData.usuarioId}'); // Muestra el usuario_id en la consola
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Inicio de sesión exitoso')),
           );
@@ -104,13 +104,15 @@ class _LoginClientState extends State<LoginClient> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Color(0xFF6D3089), // Color morado para la parte superior
+                            color: Color(
+                                0xFF6D3089), // Color morado para la parte superior
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Colors.white, // Color blanco para la parte inferior del contenedor superior
+                            color: Colors
+                                .white, // Color blanco para la parte inferior del contenedor superior
                           ),
                         ),
                       ],
@@ -153,7 +155,8 @@ class _LoginClientState extends State<LoginClient> {
           Center(
             child: SizedBox(
               width: 330,
-              height: 490, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
+              height:
+                  490, // Ajusta la altura para acomodar los campos de entrada y textos adicionales
               child: Card(
                 elevation: 7,
                 shape: RoundedRectangleBorder(
@@ -257,7 +260,8 @@ class _LoginClientState extends State<LoginClient> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ForgotPassword()),
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPassword()),
                           );
                         },
                         child: Text(
@@ -273,7 +277,8 @@ class _LoginClientState extends State<LoginClient> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => RegisterClient()),
+                            MaterialPageRoute(
+                                builder: (context) => RegisterClient()),
                           );
                         },
                         child: Text(
@@ -301,9 +306,11 @@ class InvertedWaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0.0, size.height);
-    var controlPoint = Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
+    var controlPoint =
+        Offset(size.width / 2, size.height - 140); // Ajustar según necesidades
     var endPoint = Offset(size.width, size.height); // Ajustar según necesidades
-    path.quadraticBezierTo(controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
+    path.quadraticBezierTo(
+        controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0.0);
     path.close();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:event_hub/config/conn_api.dart'; 
+import 'package:event_hub/config/conn_api.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -34,7 +34,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
       return;
     }
 
-    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    final response = await http
+        .get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
     print('Usuario PROFILE ID: ${UserData.usuarioId}');
 
     if (response.statusCode == 200) {
@@ -47,8 +48,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<void> _fetchNotifications() async {
-    final response = await http.get(Uri.parse(
-        '${Config.apiUrl}/notification/getAll'));
+    final response =
+        await http.get(Uri.parse('${Config.apiUrl}/notification/getAll'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -126,14 +127,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             size: 95.0,
                           ),
                           SizedBox(height: 10.0),
-                           Text(
-                      profileData != null ? '${profileData!['nombre']} ${profileData!['last_name']}'  : 'Cargando...',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
+                          Text(
+                            profileData != null
+                                ? '${profileData!['nombre']} ${profileData!['last_name']}'
+                                : 'Cargando...',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
                           SizedBox(height: 5.0),
                           Text(
                             'Cliente de Digital Event Hub',
@@ -209,7 +212,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         itemCount: _notifications.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -226,7 +230,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
               child: ListTile(
                 contentPadding: EdgeInsets.all(15.0),
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(_notifications[index]['avatarUrl'] ?? 'https://via.placeholder.com/150'),
+                  backgroundImage: NetworkImage(_notifications[index]
+                          ['avatarUrl'] ??
+                      'https://via.placeholder.com/150'),
                   radius: 25.0,
                 ),
                 title: Text(
@@ -248,7 +254,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ),
                   ],
                 ),
-              
               ),
             ),
           );
