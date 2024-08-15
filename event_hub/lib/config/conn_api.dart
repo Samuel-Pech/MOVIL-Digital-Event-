@@ -1,6 +1,6 @@
 // lib/config.dart
 class Config {
-  static const String apiUrl = 'https://api-digitalevent.onrender.com/api'; 
+  static const String apiUrl = 'https://api-digitalevent.onrender.com/api';
 }
 
 // class UserData {
@@ -8,5 +8,7 @@ class Config {
 // }
 
 class UserData {
-  static  String? usuarioId;
+  static String? usuarioId;
+
+  static var usuarioNombre;
 }
