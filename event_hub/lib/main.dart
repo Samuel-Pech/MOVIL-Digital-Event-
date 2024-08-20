@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:event_hub/default_home.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'home_init.dart'; // Asegúrate de importar el archivo correcto
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Digital Event Hub',
-      home: DefaultHome(),
+      home: HomeInit(), // Cambia aquí a HomeInit
     );
   }
 }

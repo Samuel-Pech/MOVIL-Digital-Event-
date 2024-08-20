@@ -30,6 +30,10 @@ class Payment {
 }
 
 class EventHistory extends StatefulWidget {
+  final String userId; // Añade un campo para el ID del usuario
+
+  EventHistory({required this.userId});
+
   @override
   _EventHistoryState createState() => _EventHistoryState();
 }
@@ -40,12 +44,12 @@ class _EventHistoryState extends State<EventHistory> {
   @override
   void initState() {
     super.initState();
-    fetchPayments();
+    fetchPayments(widget.userId); // Usa el ID del usuario
   }
 
-  Future<void> fetchPayments() async {
+  Future<void> fetchPayments(String userId) async {
     final String url =
-        'https://api-digitalevent.onrender.com/api/pagos/historialpagos';
+        'https://api-digitalevent.onrender.com/api/pagos/historialpagos/$userId'; // Ajusta la URL según el endpoint
 
     try {
       final response = await http.get(Uri.parse(url));

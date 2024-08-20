@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:event_hub/config/conn_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'event_home.dart';  // Importa el nuevo archivo
+import 'event_home.dart'; // Importa el nuevo archivo
 
 class ClientHome extends StatefulWidget {
   @override
@@ -29,7 +29,8 @@ class _ClientHomeState extends State<ClientHome> {
       return;
     }
 
-    final response = await http.get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
+    final response = await http
+        .get(Uri.parse('${Config.apiUrl}/users/${UserData.usuarioId}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -109,7 +110,8 @@ class _ClientHomeState extends State<ClientHome> {
                   fontSize: 14,
                 ),
               ),
-              currentAccountPicture: profileData != null && profileData!['fotoPerfil'] != null
+              currentAccountPicture: profileData != null &&
+                      profileData!['fotoPerfil'] != null
                   ? CircleAvatar(
                       backgroundImage: NetworkImage(profileData!['fotoPerfil']),
                     )
@@ -122,17 +124,24 @@ class _ClientHomeState extends State<ClientHome> {
             _createDrawerItem(
               icon: Icons.account_circle,
               text: 'Perfil',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage())),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePage())),
             ),
             _createDrawerItem(
               icon: Icons.history,
               text: 'Historial de compras',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => EventHistory())),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EventHistory(
+                            userId: '',
+                          ))),
             ),
             _createDrawerItem(
               icon: Icons.notifications,
               text: 'Notificaciones',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage())),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => NotificationsPage())),
             ),
             _createDrawerItem(
               icon: Icons.calendar_month,
@@ -169,7 +178,10 @@ class _ClientHomeState extends State<ClientHome> {
     );
   }
 
-  ListTile _createDrawerItem({required IconData icon, required String text, required GestureTapCallback onTap}) {
+  ListTile _createDrawerItem(
+      {required IconData icon,
+      required String text,
+      required GestureTapCallback onTap}) {
     return ListTile(
       leading: Icon(icon, color: Color(0xFF6D3089)),
       title: Text(text, style: TextStyle(fontSize: 16)),
